@@ -78,8 +78,8 @@ import numpy as np
 from six.moves import xrange  # pylint: disable=redefined-builtin
 import tensorflow as tf
 
-import input_data
-import models
+from comp import model
+from comp import input_data
 from tensorflow.python.platform import gfile
 
 FLAGS = None
@@ -95,7 +95,7 @@ def main(_):
   # Begin by making sure we have the training data we need. If you already have
   # training data of your own, use `--data_url= ` on the command line to avoid
   # downloading.
-  model_settings = models.prepare_model_settings(
+  model_settings = model.prepare_model_settings(
       len(input_data.prepare_words_list(FLAGS.wanted_words.split(','))),
       FLAGS.sample_rate, FLAGS.clip_duration_ms, FLAGS.window_size_ms,
       FLAGS.window_stride_ms, FLAGS.dct_coefficient_count)
@@ -125,11 +125,8 @@ def main(_):
   fingerprint_input = tf.placeholder(
       tf.float32, [None, fingerprint_size], name='fingerprint_input')
 
-  logits, dropout_prob = models.create_model(
-      fingerprint_input,
-      model_settings,
-      FLAGS.model_architecture,
-      is_training=True)
+  logits, dropout_prob = model.create_conv_model(fingerprint_input,
+                                                 model_settings, is_training=True)
 
   # Define loss and optimizer
   ground_truth_input = tf.placeholder(
@@ -176,7 +173,7 @@ def main(_):
   start_step = 1
 
   if FLAGS.start_checkpoint:
-    models.load_variables_from_checkpoint(sess, FLAGS.start_checkpoint)
+    model.load_variables_from_checkpoint(sess, FLAGS.start_checkpoint)
     start_step = global_step.eval(session=sess)
 
   tf.logging.info('Training from step: %d ', start_step)
@@ -397,7 +394,7 @@ if __name__ == '__main__':
   parser.add_argument(
       '--wanted_words',
       type=str,
-      default='yes,no,up,down,left,right,on,off,stop,go,silence',
+      default='yes,no,up,down,left,right,on,off,stop,go',
       help='Words to use (others will be added to an unknown label)',)
   parser.add_argument(
       '--train_dir',
