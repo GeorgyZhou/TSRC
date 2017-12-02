@@ -78,8 +78,8 @@ import numpy as np
 from six.moves import xrange  # pylint: disable=redefined-builtin
 import tensorflow as tf
 
-from comp import model
-from comp import input_data
+import model
+import input_data
 from tensorflow.python.platform import gfile
 
 FLAGS = None
