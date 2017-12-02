@@ -148,6 +148,7 @@ def create_single_fc_model(fingerprint_input, model_settings, is_training):
     TensorFlow node outputting logits results, and optionally a dropout
     placeholder.
   """
+  print(fingerprint_input)
   if is_training:
     dropout_prob = tf.placeholder(tf.float32, name='dropout_prob')
   fingerprint_size = model_settings['fingerprint_size']
