@@ -21,6 +21,8 @@ def main(_):
   else:
     raise ValueError("checkpoint is not specified")
 
+
+
   # TODO(qijiazhou)
 
 if __name__ == '__main__':
