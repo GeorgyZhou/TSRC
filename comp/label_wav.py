@@ -105,14 +105,15 @@ def label_wav(wav_dir, labels, graph, input_name, output_name, how_many_labels):
       wav_data = wav_file.read()
       run_graph(wav_data, labels_list, input_name, output_name, how_many_labels,
                 filename, res_dics)
+  save_res(res_dics)
 
 
-def save_res(res_dic):
+def save_res(res_dics):
   dest = FLAGS.output_path
   with open(dest, 'wb') as f:
     writer = csv.DictWriter(f, fieldnames=["fname", "label"])
     writer.writeheader()
-    writer.writerows(res_dic)
+    writer.writerows(res_dics)
 
 
 def main(_):

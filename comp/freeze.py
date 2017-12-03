@@ -72,7 +72,7 @@ def create_inference_graph(wanted_words, sample_rate, clip_duration_ms,
   """
 
   words_list = input_data.prepare_words_list(wanted_words.split(','))
-  model_settings = models.prepare_model_settings(
+  model_settings = model.prepare_model_settings(
       len(words_list), sample_rate, clip_duration_ms, window_size_ms,
       window_stride_ms, dct_coefficient_count)
   runtime_settings = {'clip_stride_ms': clip_stride_ms}
@@ -98,9 +98,8 @@ def create_inference_graph(wanted_words, sample_rate, clip_duration_ms,
       -1, fingerprint_time_size * fingerprint_frequency_size
   ])
 
-  logits = models.create_model(
-      reshaped_input, model_settings, model_architecture, is_training=False,
-      runtime_settings=runtime_settings)
+  logits = model.create_conv_model(fingerprint_input,
+                                   model_settings, is_training=True)
 
   # Create an output to use for inference.
   tf.nn.softmax(logits, name='labels_softmax')
@@ -114,7 +113,7 @@ def main(_):
                          FLAGS.clip_duration_ms, FLAGS.clip_stride_ms,
                          FLAGS.window_size_ms, FLAGS.window_stride_ms,
                          FLAGS.dct_coefficient_count, FLAGS.model_architecture)
-  models.load_variables_from_checkpoint(sess, FLAGS.start_checkpoint)
+  model.load_variables_from_checkpoint(sess, FLAGS.start_checkpoint)
 
   # Turn all the variables into inline constants inside the graph and save it.
   frozen_graph_def = graph_util.convert_variables_to_constants(
