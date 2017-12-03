@@ -99,7 +99,7 @@ def create_inference_graph(wanted_words, sample_rate, clip_duration_ms,
   ])
 
   logits = model.create_conv_model(fingerprint_input,
-                                   model_settings, is_training=True)
+                                   model_settings, is_training=False)
 
   # Create an output to use for inference.
   tf.nn.softmax(logits, name='labels_softmax')
