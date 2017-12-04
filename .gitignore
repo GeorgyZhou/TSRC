@@ -3,3 +3,4 @@ data/*
 DES.md
 .idea/*
 train_dir/*
+output/*

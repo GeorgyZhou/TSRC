@@ -73,10 +73,10 @@ def run_graph(wav_data, labels, input_layer_name, output_layer_name,
     # Sort to show labels in order of confidence
     top_k = predictions.argsort()[-num_top_predictions:][::-1]
     res_dics.append({"fname": filename, "label": labels[top_k[0]]})
-    for node_id in top_k:
-      human_string = labels[node_id]
-      score = predictions[node_id]
-      print('%s (score = %.5f)' % (human_string, score))
+    # for node_id in top_k:
+    #   human_string = labels[node_id]
+    #   score = predictions[node_id]
+    #   print('%s (score = %.5f)' % (human_string, score))
 
     return 0
 
@@ -105,15 +105,18 @@ def label_wav(wav_dir, labels, graph, input_name, output_name, how_many_labels):
       wav_data = wav_file.read()
       run_graph(wav_data, labels_list, input_name, output_name, how_many_labels,
                 filename, res_dics)
+    count = len(res_dics)
+    sys.stdout.write("%d of 68864 has been labeled!\r" % count)
+    sys.stdout.flush()
   save_res(res_dics)
 
 
 def save_res(res_dics):
   dest = FLAGS.output_path
-  with open(dest, 'wb') as f:
+  with open(dest, 'w') as f:
     writer = csv.DictWriter(f, fieldnames=["fname", "label"])
     writer.writeheader()
-    writer.writerows(res_dics)
+    writer.writerows(dic for dic in res_dics)
 
 
 def main(_):
